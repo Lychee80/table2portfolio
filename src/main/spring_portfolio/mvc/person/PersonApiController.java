@@ -42,7 +42,17 @@ public class PersonApiController {
         // Bad ID
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);       
     }
-
+    @GetMapping("/{id}/bmiInfo")
+    public String getBmi(@PathVariable long id) {
+        Optional<Person> optional = repository.findById(id);
+        if (optional.isPresent()) {  // Good ID
+            Person person = optional.get();  // value from findByID
+            String bmiInfo= person.bmiInfoToString();
+            return bmiInfo;
+            
+        }
+       return "error"; // Bad ID    
+    }
     /*
     DELETE individual Person using ID
      */
@@ -65,7 +75,9 @@ public class PersonApiController {
     public ResponseEntity<Object> postPerson(@RequestParam("email") String email,
                                              @RequestParam("password") String password,
                                              @RequestParam("name") String name,
-                                             @RequestParam("dob") String dobString) {
+                                             @RequestParam("dob") String dobString,
+                                             @RequestParam("weight") double weight,
+                                             @RequestParam("height") double height) {
         Date dob;
         try {
             dob = new SimpleDateFormat("MM-dd-yyyy").parse(dobString);
@@ -73,7 +85,7 @@ public class PersonApiController {
             return new ResponseEntity<>(dobString +" error; try MM-dd-yyyy", HttpStatus.BAD_REQUEST);
         }
         // A person object WITHOUT ID will create a new record with default roles as student
-        Person person = new Person(email, password, name, dob);
+        Person person = new Person(email, password, name, dob, weight, height);
         repository.save(person);
         return new ResponseEntity<>(email +" is created successfully", HttpStatus.CREATED);
     }
@@ -113,7 +125,7 @@ public class PersonApiController {
             }
 
             // Set Date and Attributes to SQL HashMap
-            Map<String, Map<String, Object>> date_map = new HashMap<>();
+            Map<String, Map<String, Object>> date_map = person.getStats();
             date_map.put( (String) stat_map.get("date"), attributeMap );
             person.setStats(date_map);  // BUG, needs to be customized to replace if existing or append if new
             repository.save(person);  // conclude by writing the stats updates

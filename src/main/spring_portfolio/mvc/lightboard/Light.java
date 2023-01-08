@@ -3,9 +3,6 @@ package com.nighthawk.spring_portfolio.mvc.lightboard;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Data;
-
-@Data  // Annotations to simplify writing code (ie constructors, setters)
 public class Light {
     boolean on;
     short red;
@@ -63,9 +60,16 @@ public class Light {
          );
     }
 
+    public void setRGB(short r, short g, short b) {
+        this.red = r;
+        this.green = g;
+        this.blue = b;
+    }
+
     /* toString output as key/values */
     public String toString() {
         return( "{" + 
+            "\"on\": " + on + "," +
             "\"red\": " + red + "," +
             "\"green\": " +  green + "," + 
             "\"blue\": " + blue + "," +
@@ -73,9 +77,35 @@ public class Light {
             "}" );
     }
 
+    public boolean isOn() {
+        return this.on;
+    }
+
+    public void setOn(boolean on) {
+        this.on = on;
+    }
+
+    public short getRed() {
+        return red;
+    }
+
+    public short getGreen() {
+        return green;
+    }
+
+    public short getBlue() {
+        return blue;
+    }
+
+    public short getEffect() {
+        return effect;
+    }
+
     static public void main(String[] args) {
         // create and display LightBoard
         Light light = new Light();
         System.out.println(light);  // use toString() method
     }
+    
+
 }
